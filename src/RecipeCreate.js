@@ -1,57 +1,63 @@
 import React, { useState } from "react";
+import './RecipeCreate.css'
 
 function RecipeCreate(props) {
 
-  const [name, setName] = useState("");
-  const [cuisine, setCuisine] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [preparation, setPreparation] = useState("");
+  const initialFormState = {
+    name: '',
+    cuisine: '',
+    photo: '',
+    ingredients: '',
+    preparation: ''
+  };
+
+  const [recipe, setRecipe] = useState(initialFormState);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setRecipe(prevState => ({ ...prevState, [name]: value }));
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    const newRecipe = { name, cuisine, photo, ingredients, preparation };
-    
-    props.onAddRecipe(newRecipe);
 
-    setName("");
-    setCuisine("");
-    setPhoto("");
-    setIngredients("");
-    setPreparation("");
+    for (let field in recipe) {
+      if (!recipe[field]) {
+        alert(`Please fill in the ${field} field.`);
+        return;
+      }
+    }
+
+    props.onAddRecipe(recipe);
+
+    setRecipe(initialFormState);
   }
 
   return (
-    <form name="create" onSubmit={handleSubmit}>
-      <table>
-        <tbody>
-          <tr>
-            <td>Name:</td>
-            <td><input name="name" value={name} onChange={(e) => setName(e.target.value)} /></td>
-          </tr>
-          <tr>
-            <td>Cuisine:</td>
-            <td><input name="cuisine" value={cuisine} onChange={(e) => setCuisine(e.target.value)} /></td>
-          </tr>
-          <tr>
-            <td>Photo URL:</td>
-            <td><input name="photo" value={photo} onChange={(e) => setPhoto(e.target.value)} /></td>
-          </tr>
-          <tr>
-            <td>Ingredients:</td>
-            <td><textarea name="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)}></textarea></td>
-          </tr>
-          <tr>
-            <td>Preparation:</td>
-            <td><textarea name="preparation" value={preparation} onChange={(e) => setPreparation(e.target.value)}></textarea></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td><button type="submit">Create</button></td>
-          </tr>
-        </tbody>
-      </table>
+    <form name="create" className="form-group" onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="name">Name:</label>
+        <input name="name" value={recipe.name} onChange={handleInputChange} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="cuisine">Cuisine:</label>
+        <input name="cuisine" value={recipe.cuisine} onChange={handleInputChange} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="photo">Photo URL:</label>
+        <input name="photo" value={recipe.photo} onChange={handleInputChange} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="ingredients">Ingredients:</label>
+        <textarea name="ingredients" value={recipe.ingredients} onChange={handleInputChange}></textarea>
+      </div>
+      <div className="form-group">
+        <label htmlFor="preparation">Preparation:</label>
+        <textarea name="preparation" value={recipe.preparation} onChange={handleInputChange}></textarea>
+      </div>
+      <div className="form-group">
+        <button type="submit">Create</button>
+      </div>
     </form>
   );
 }
